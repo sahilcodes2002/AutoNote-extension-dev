@@ -135,7 +135,7 @@ export default function FloatingIcon({
   const [hide, sethide] = useState(true);
   const [shownotes, setShownotes] = useState(false);
   const [allfiles, setAllfiles] = useState([]);
-  
+
   const [showallfile, setshowallfiles] = useState(false);
   const [autotoken69, setautotoken69] = useState("");
   const [file, setfile] = useState(0);
@@ -148,7 +148,7 @@ export default function FloatingIcon({
 
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === "processMessage") {
-      console.log(message.data.isChecked);
+      //console.log(message.data.isChecked);
       sethide(message.data.isChecked);
       sendResponse({ status: "Message received!", receivedData: message.data });
     }
@@ -156,8 +156,8 @@ export default function FloatingIcon({
 
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === "setautotoken69") {
-      console.log("Message received in content script:");
-      console.log(message.token69); // Correct way to access the token
+      //console.log("Message received in content script:");
+      //console.log(message.token69); // Correct way to access the token
 
       if (message.token69) {
         setautotoken69(message.token69);
@@ -166,18 +166,18 @@ export default function FloatingIcon({
   });
 
   useEffect(() => {
-    console.log(file);
+    //console.log(file);
   }, [file]);
 
   useEffect(() => {
     chrome.storage.local.get(["autotoken69"], (tokenResult) => {
       const token = tokenResult.autotoken69;
       if (!token) {
-        console.log("No token found.");
+        //console.log("No token found.");
         return;
       }
 
-      console.log("Token retrieved:", token);
+      //console.log("Token retrieved:", token);
 
       // Send request to backend
       fetch("https://autonotebackend.shadowbites10.workers.dev/getalwayson", {
@@ -190,35 +190,33 @@ export default function FloatingIcon({
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log("Received response from backend:", data); // ✅ Debugging
+          //console.log("Received response from backend:", data); // ✅ Debugging
           if (data.success) {
             sethide(!data.res.alwayson);
-            console.log("Default state updated:", data.res.alwayson);
+            //console.log("Default state updated:", data.res.alwayson);
           } else {
-            console.error("Backend returned failure:", data);
+            //console.error("Backend returned failure:", data);
           }
         })
         .catch((error) => {
-          console.error("Error updating default state:", error);
+          //console.error("Error updating default state:", error);
         });
     });
   }, []);
 
   useEffect(() => {
     if (file !== 0 && selectedTexts != [] && bakchodiover) {
-      console.log(file);
+      //console.log(file);
 
-      // Fetch the token first
       chrome.storage.local.get(["autotoken69"], (tokenResult) => {
         const token = tokenResult.autotoken69;
         if (!token) {
-          console.log("No token found.");
+          //console.log("No token found.");
           return;
         }
 
-        console.log("Token retrieved:", token);
+        //console.log("Token retrieved:", token);
 
-        // Send content to the backend
         fetch("https://autonotebackend.shadowbites10.workers.dev/addcontent", {
           method: "POST",
           headers: {
@@ -233,13 +231,13 @@ export default function FloatingIcon({
           .then((response) => response.json())
           .then((data) => {
             if (data.success) {
-              console.log("File updated:", data.res.id);
+              //console.log("File updated:", data.res.id);
             } else {
-              console.error("Backend returned failure:", data);
+              //console.error("Backend returned failure:", data);
             }
           })
           .catch((error) => {
-            console.error("Error storing tabs in the backend:", error);
+            //console.error("Error storing tabs in the backend:", error);
           });
       });
     }
@@ -247,13 +245,13 @@ export default function FloatingIcon({
 
   useEffect(() => {
     if (autotoken69 === "") {
-      console.log("asking for token");
+      //console.log("asking for token");
       chrome.runtime.sendMessage({
         action: "givetoken",
         data: "Hello from content script!",
       });
     } else {
-      console.log("Token already exists :" + autotoken69);
+      //console.log("Token already exists :" + autotoken69);
     }
   }, []);
 
@@ -262,11 +260,11 @@ export default function FloatingIcon({
       chrome.storage.local.get(["autotoken69"], (tokenResult) => {
         const token = tokenResult.autotoken69;
         if (!token) {
-          console.log("No token found.");
+          //console.log("No token found.");
           return;
         }
 
-        console.log("Token retrieved:", token);
+        //console.log("Token retrieved:", token);
 
         // Send request to backend
         fetch("https://autonotebackend.shadowbites10.workers.dev/getallfiles", {
@@ -279,16 +277,16 @@ export default function FloatingIcon({
         })
           .then((response) => response.json())
           .then((data) => {
-            console.log("Received response from backend:", data); // ✅ Debugging
+            //console.log("Received response from backend:", data); // ✅ Debugging
             if (data.success) {
               setAllfiles(data.res);
-              console.log("Default state updated:", data.res.alwayson);
+              //console.log("Default state updated:", data.res.alwayson);
             } else {
-              console.error("Backend returned failure:", data);
+              //console.error("Backend returned failure:", data);
             }
           })
           .catch((error) => {
-            console.error("Error updating default state:", error);
+            // //console.error("Error updating default state:", error);
           });
       });
     }
@@ -304,9 +302,9 @@ export default function FloatingIcon({
         const title = response.title;
         const favicon = response.favicon;
 
-        console.log("Tab URL:", url);
-        console.log("Tab Title:", title);
-        console.log("Tab Favicon:", favicon);
+        // //console.log("Tab URL:", url);
+        // //console.log("Tab Title:", title);
+        // //console.log("Tab Favicon:", favicon);
 
         if (!url) return; // If URL is empty, exit early
 
@@ -314,51 +312,57 @@ export default function FloatingIcon({
         chrome.storage.local.get(["autotoken69"], (tokenResult) => {
           const token = tokenResult.autotoken69;
           if (!token) {
-            console.log("No token found.");
+            // //console.log("No token found.");
             return;
           }
 
-          console.log("Token retrieved:", token);
+          // //console.log("Token retrieved:", token);
 
           // Check if the URL is already stored
           chrome.storage.local.get([url], (storedResult) => {
             if (storedResult[url]) {
               setfile(JSON.parse(storedResult[url]));
 
-              console.log(
-                "file id is already there for this" +
-                  JSON.parse(storedResult[url])
-              );
+              // //console.log(
+              //   "file id is already there for this" +
+              //     JSON.parse(storedResult[url])
+              // );
               setbakchodiover(false);
-              fetch("https://autonotebackend.shadowbites10.workers.dev/getfiletitle", {
-                method: "POST",
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ id: JSON.parse(storedResult[url]) }),
-              })
+              fetch(
+                "https://autonotebackend.shadowbites10.workers.dev/getfiletitle",
+                {
+                  method: "POST",
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({ id: JSON.parse(storedResult[url]) }),
+                }
+              )
                 .then((response) => response.json())
                 .then((data) => {
                   if (data.success) {
-                    console.log(data);
+                    // //console.log(data);
                     setfiletitle(data.res.title);
                     setSelectedTexts(JSON.parse(data.res.content));
                     setbakchodiover(true);
-                    console.log("File title:", data.res.title);
-                  }else {
-                    fetch("https://autonotebackend.shadowbites10.workers.dev/newfile", {
-                      method: "POST",
-                      headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json",
-                      },
-                      body: JSON.stringify({
-                        title: title,
-                        tab: url,
-                        faviconicon: favicon,
-                      }),
-                    })
+                    //console.log("File title:", data.res.title);
+                  } else {
+                    fetch(
+                      "https://autonotebackend.shadowbites10.workers.dev/newfile",
+                      {
+                        method: "POST",
+                        headers: {
+                          Authorization: `Bearer ${token}`,
+                          "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                          title: title,
+                          tab: url,
+                          faviconicon: favicon,
+                        }),
+                      }
+                    )
                       .then((response) => response.json())
                       .then((data) => {
                         if (data.success) {
@@ -368,7 +372,7 @@ export default function FloatingIcon({
                           chrome.storage.local.set(
                             { [url]: JSON.stringify(data.res.id) },
                             () => {
-                              console.log("Tab data stored.");
+                              // //console.log("Tab data stored.");
                             }
                           );
                           if (
@@ -376,80 +380,45 @@ export default function FloatingIcon({
                             selectedTexts != [] &&
                             bakchodiover
                           ) {
-                            console.log(file);
-
-                            // Fetch the token first
-                            // chrome.storage.local.get(
-                            //   ["autotoken69"],
-                            //   (tokenResult) => {
-                            //     const token = tokenResult.autotoken69;
-                            //     if (!token) {
-                            //       console.log("No token found.");
-                            //       return;
-                            //     }
-
-                            //     console.log("Token retrieved:", token);
-
-                                // Send content to the backend
-                                // fetch("https://autonotebackend.shadowbites10.workers.dev/addcontent", {
-                                //   method: "POST",
-                                //   headers: {
-                                //     Authorization: `Bearer ${token}`,
-                                //     "Content-Type": "application/json",
-                                //   },
-                                //   body: JSON.stringify({
-                                //     content: JSON.stringify(selectedTexts),
-                                //     id: data.res.id,
-                                //   }),
-                                // })
-                                //   .then((response) => response.json())
-                                //   .then((data) => {
-                                //     if (data.success) {
-                                //       // console.log("File updated:", data.res.content);
-                                //     } else {
-                                //       console.error("Backend returned failure:", data);
-                                //     }
-                                //   })
-                                //   .catch((error) => {
-                                //     console.error("Error storing tabs in the backend:", error);
-                                //   });
-                            //   }
-                            // );
+                            // //console.log(file);
                           }
-                          fetch("https://autonotebackend.shadowbites10.workers.dev/upserturl", {
-                            method: "POST",
-                            headers: {
-                              Authorization: `Bearer ${token}`,
-                              "Content-Type": "application/json",
-                            },
-                            body: JSON.stringify({
-                              url: url,
-                              file: data.res.id,
-                            }),
-                          })
+                          fetch(
+                            "https://autonotebackend.shadowbites10.workers.dev/upserturl",
+                            {
+                              method: "POST",
+                              headers: {
+                                Authorization: `Bearer ${token}`,
+                                "Content-Type": "application/json",
+                              },
+                              body: JSON.stringify({
+                                url: url,
+                                file: data.res.id,
+                              }),
+                            }
+                          )
                             .then((response) => response.json())
                             .then((data) => {
                               if (data.success) {
                               }
                             })
                             .catch((error) => {
-                              console.error(
-                                "Error storing tabs in the backend:",
-                                error
-                              );
+                              //console.error(
+                              //   "Error storing tabs in the backend:",
+                              //   error
+                              // );
                             });
                         }
                       })
                       .catch((error) => {
-                        console.error(
-                          "Error storing tabs in the backend:",
-                          error
-                        );
+                        //console.error(
+                        //   "Error storing tabs in the backend:",
+                        //   error
+                        // );
                       });
                   }
                 })
                 .catch((error) => {
-                  console.error("Error storing tabs in the backend:", error);
+                  //console.error("Error storing tabs in the backend:", error);
                 });
 
               // fetch("https://autonotebackend.shadowbites10.workers.dev/getfilecontent", {
@@ -465,29 +434,32 @@ export default function FloatingIcon({
               //     if (data.success) {
               //       setSelectedTexts(JSON.parse(data.res.content));
               //       setbakchodiover(true);
-              //       console.log(
+                    // //console.log(
               //         "File contnent from BACKEND:",
               //         data.res.content
               //       );
               //     }
               //   })
               //   .catch((error) => {
-              //     console.error("Error storing tabs in the backend:", error);
+                  // //console.error("Error storing tabs in the backend:", error);
               //   });
             } else {
               // Fetch from backend
               var fileurlfound = false;
               setbakchodiover(false);
-              fetch("https://autonotebackend.shadowbites10.workers.dev/geturl", {
-                method: "POST",
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  url: url,
-                }),
-              })
+              fetch(
+                "https://autonotebackend.shadowbites10.workers.dev/geturl",
+                {
+                  method: "POST",
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    url: url,
+                  }),
+                }
+              )
                 .then((response) => response.json())
                 .then((data) => {
                   if (data.success) {
@@ -496,39 +468,45 @@ export default function FloatingIcon({
                     chrome.storage.local.set(
                       { [url]: JSON.stringify(data.res.file_id) },
                       () => {
-                        console.log("Tab data stored.");
+                        //console.log("Tab data stored.");
                       }
                     );
-                    fetch("https://autonotebackend.shadowbites10.workers.dev/getfiletitle", {
-                      method: "POST",
-                      headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json",
-                      },
-                      body: JSON.stringify({ id: data.res.file_id }),
-                    })
+                    fetch(
+                      "https://autonotebackend.shadowbites10.workers.dev/getfiletitle",
+                      {
+                        method: "POST",
+                        headers: {
+                          Authorization: `Bearer ${token}`,
+                          "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ id: data.res.file_id }),
+                      }
+                    )
                       .then((response) => response.json())
                       .then((data) => {
                         if (data.success) {
-                          console.log(data);
+                          //console.log(data);
                           setfiletitle(data.res.title);
                           setSelectedTexts(JSON.parse(data.res.content));
                           setbakchodiover(true);
 
-                          console.log("File title:", data.res.title);
-                        }else {
-                          fetch("https://autonotebackend.shadowbites10.workers.dev/newfile", {
-                            method: "POST",
-                            headers: {
-                              Authorization: `Bearer ${token}`,
-                              "Content-Type": "application/json",
-                            },
-                            body: JSON.stringify({
-                              title: title,
-                              tab: url,
-                              faviconicon: favicon,
-                            }),
-                          })
+                          //console.log("File title:", data.res.title);
+                        } else {
+                          fetch(
+                            "https://autonotebackend.shadowbites10.workers.dev/newfile",
+                            {
+                              method: "POST",
+                              headers: {
+                                Authorization: `Bearer ${token}`,
+                                "Content-Type": "application/json",
+                              },
+                              body: JSON.stringify({
+                                title: title,
+                                tab: url,
+                                faviconicon: favicon,
+                              }),
+                            }
+                          )
                             .then((response) => response.json())
                             .then((data) => {
                               if (data.success) {
@@ -538,7 +516,7 @@ export default function FloatingIcon({
                                 chrome.storage.local.set(
                                   { [url]: JSON.stringify(data.res.id) },
                                   () => {
-                                    console.log("Tab data stored.");
+                                    //console.log("Tab data stored.");
                                   }
                                 );
                                 if (
@@ -546,97 +524,103 @@ export default function FloatingIcon({
                                   selectedTexts != [] &&
                                   bakchodiover
                                 ) {
-                                  console.log(file);
-      
+                                  //console.log(file);
+
                                   // Fetch the token first
                                   // chrome.storage.local.get(
                                   //   ["autotoken69"],
                                   //   (tokenResult) => {
                                   //     const token = tokenResult.autotoken69;
                                   //     if (!token) {
-                                  //       console.log("No token found.");
+                                        // //console.log("No token found.");
                                   //       return;
                                   //     }
-      
-                                  //     console.log("Token retrieved:", token);
-      
-                                      // Send content to the backend
-                                      // fetch("https://autonotebackend.shadowbites10.workers.dev/addcontent", {
-                                      //   method: "POST",
-                                      //   headers: {
-                                      //     Authorization: `Bearer ${token}`,
-                                      //     "Content-Type": "application/json",
-                                      //   },
-                                      //   body: JSON.stringify({
-                                      //     content: JSON.stringify(selectedTexts),
-                                      //     id: data.res.id,
-                                      //   }),
-                                      // })
-                                      //   .then((response) => response.json())
-                                      //   .then((data) => {
-                                      //     if (data.success) {
-                                      //       // console.log("File updated:", data.res.content);
-                                      //     } else {
-                                      //       console.error("Backend returned failure:", data);
-                                      //     }
-                                      //   })
-                                      //   .catch((error) => {
-                                      //     console.error("Error storing tabs in the backend:", error);
-                                      //   });
+
+                                      // //console.log("Token retrieved:", token);
+
+                                  // Send content to the backend
+                                  // fetch("https://autonotebackend.shadowbites10.workers.dev/addcontent", {
+                                  //   method: "POST",
+                                  //   headers: {
+                                  //     Authorization: `Bearer ${token}`,
+                                  //     "Content-Type": "application/json",
+                                  //   },
+                                  //   body: JSON.stringify({
+                                  //     content: JSON.stringify(selectedTexts),
+                                  //     id: data.res.id,
+                                  //   }),
+                                  // })
+                                  //   .then((response) => response.json())
+                                  //   .then((data) => {
+                                  //     if (data.success) {
+                                        //console.log("File updated:", data.res.content);
+                                  //     } else {
+                                        // //console.error("Backend returned failure:", data);
+                                  //     }
+                                  //   })
+                                  //   .catch((error) => {
+                                      // //console.error("Error storing tabs in the backend:", error);
+                                  //   });
                                   //   }
                                   // );
                                 }
-                                fetch("https://autonotebackend.shadowbites10.workers.dev/upserturl", {
-                                  method: "POST",
-                                  headers: {
-                                    Authorization: `Bearer ${token}`,
-                                    "Content-Type": "application/json",
-                                  },
-                                  body: JSON.stringify({
-                                    url: url,
-                                    file: data.res.id,
-                                  }),
-                                })
+                                fetch(
+                                  "https://autonotebackend.shadowbites10.workers.dev/upserturl",
+                                  {
+                                    method: "POST",
+                                    headers: {
+                                      Authorization: `Bearer ${token}`,
+                                      "Content-Type": "application/json",
+                                    },
+                                    body: JSON.stringify({
+                                      url: url,
+                                      file: data.res.id,
+                                    }),
+                                  }
+                                )
                                   .then((response) => response.json())
                                   .then((data) => {
                                     if (data.success) {
                                     }
                                   })
                                   .catch((error) => {
-                                    console.error(
-                                      "Error storing tabs in the backend:",
-                                      error
-                                    );
+                                    //console.error(
+                                    //   "Error storing tabs in the backend:",
+                                    //   error
+                                    // );
                                   });
                               }
                             })
                             .catch((error) => {
-                              console.error(
-                                "Error storing tabs in the backend:",
-                                error
-                              );
+                              //console.error(
+                              //   "Error storing tabs in the backend:",
+                              //   error
+                              // );
                             });
                         }
                       })
                       .catch((error) => {
-                        console.error(
-                          "Error storing tabs in the backend:",
-                          error
-                        );
+                        //console.error(
+                        //   "Error storing tabs in the backend:",
+                        //   error
+                        // );
                       });
                   } else {
-                    fetch("https://autonotebackend.shadowbites10.workers.dev/newfile", {
-                      method: "POST",
-                      headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json",
-                      },
-                      body: JSON.stringify({
-                        title: title,
-                        tab: url,
-                        faviconicon: favicon,
-                      }),
-                    })
+                    fetch(
+                      "https://autonotebackend.shadowbites10.workers.dev/newfile",
+                      {
+                        method: "POST",
+                        headers: {
+                          Authorization: `Bearer ${token}`,
+                          "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                          title: title,
+                          tab: url,
+                          faviconicon: favicon,
+                        }),
+                      }
+                    )
                       .then((response) => response.json())
                       .then((data) => {
                         if (data.success) {
@@ -646,7 +630,7 @@ export default function FloatingIcon({
                           chrome.storage.local.set(
                             { [url]: JSON.stringify(data.res.id) },
                             () => {
-                              console.log("Tab data stored.");
+                              //console.log("Tab data stored.");
                             }
                           );
                           if (
@@ -654,7 +638,7 @@ export default function FloatingIcon({
                             selectedTexts != [] &&
                             bakchodiover
                           ) {
-                            console.log(file);
+                            //console.log(file);
 
                             // Fetch the token first
                             // chrome.storage.local.get(
@@ -662,72 +646,75 @@ export default function FloatingIcon({
                             //   (tokenResult) => {
                             //     const token = tokenResult.autotoken69;
                             //     if (!token) {
-                            //       console.log("No token found.");
+                                  // //console.log("No token found.");
                             //       return;
                             //     }
 
-                            //     console.log("Token retrieved:", token);
+                                // //console.log("Token retrieved:", token);
 
-                                // Send content to the backend
-                                // fetch("https://autonotebackend.shadowbites10.workers.dev/addcontent", {
-                                //   method: "POST",
-                                //   headers: {
-                                //     Authorization: `Bearer ${token}`,
-                                //     "Content-Type": "application/json",
-                                //   },
-                                //   body: JSON.stringify({
-                                //     content: JSON.stringify(selectedTexts),
-                                //     id: data.res.id,
-                                //   }),
-                                // })
-                                //   .then((response) => response.json())
-                                //   .then((data) => {
-                                //     if (data.success) {
-                                //       // console.log("File updated:", data.res.content);
-                                //     } else {
-                                //       console.error("Backend returned failure:", data);
-                                //     }
-                                //   })
-                                //   .catch((error) => {
-                                //     console.error("Error storing tabs in the backend:", error);
-                                //   });
+                            // Send content to the backend
+                            // fetch("https://autonotebackend.shadowbites10.workers.dev/addcontent", {
+                            //   method: "POST",
+                            //   headers: {
+                            //     Authorization: `Bearer ${token}`,
+                            //     "Content-Type": "application/json",
+                            //   },
+                            //   body: JSON.stringify({
+                            //     content: JSON.stringify(selectedTexts),
+                            //     id: data.res.id,
+                            //   }),
+                            // })
+                            //   .then((response) => response.json())
+                            //   .then((data) => {
+                            //     if (data.success) {
+                                  //console.log("File updated:", data.res.content);
+                            //     } else {
+                                  // //console.error("Backend returned failure:", data);
+                            //     }
+                            //   })
+                            //   .catch((error) => {
+                                // //console.error("Error storing tabs in the backend:", error);
+                            //   });
                             //   }
                             // );
                           }
-                          fetch("https://autonotebackend.shadowbites10.workers.dev/upserturl", {
-                            method: "POST",
-                            headers: {
-                              Authorization: `Bearer ${token}`,
-                              "Content-Type": "application/json",
-                            },
-                            body: JSON.stringify({
-                              url: url,
-                              file: data.res.id,
-                            }),
-                          })
+                          fetch(
+                            "https://autonotebackend.shadowbites10.workers.dev/upserturl",
+                            {
+                              method: "POST",
+                              headers: {
+                                Authorization: `Bearer ${token}`,
+                                "Content-Type": "application/json",
+                              },
+                              body: JSON.stringify({
+                                url: url,
+                                file: data.res.id,
+                              }),
+                            }
+                          )
                             .then((response) => response.json())
                             .then((data) => {
                               if (data.success) {
                               }
                             })
                             .catch((error) => {
-                              console.error(
-                                "Error storing tabs in the backend:",
-                                error
-                              );
+                              //console.error(
+                              //   "Error storing tabs in the backend:",
+                              //   error
+                              // );
                             });
                         }
                       })
                       .catch((error) => {
-                        console.error(
-                          "Error storing tabs in the backend:",
-                          error
-                        );
+                        //console.error(
+                        //   "Error storing tabs in the backend:",
+                        //   error
+                        // );
                       });
                   }
                 })
                 .catch((error) => {
-                  console.error("Error storing tabs in the backend:", error);
+                  //console.error("Error storing tabs in the backend:", error);
                 });
             }
           });
@@ -766,7 +753,7 @@ export default function FloatingIcon({
     };
   }, [isDragging]);
   useEffect(() => {
-    console.log(isDragging);
+    //console.log(isDragging);
   }, [isDragging]);
 
   const handleMouseDown = (e) => {
@@ -975,7 +962,7 @@ export default function FloatingIcon({
                 }
                 setShownotes((x) => !x);
 
-                console.log("x" + shownotes);
+                //console.log("x" + shownotes);
               }}
               title="toggle notes"
             >
@@ -1082,7 +1069,7 @@ function NotesDisplay({ selectedTexts, position, setselectdtexts, record }) {
         </Notewarning>
       )}
       {record && selectedTexts && selectedTexts.length == 0 && (
-        <Notewarning>{"Start selecting text to create a notes"}</Notewarning>
+        <Notewarning>{"Start selecting text to create notes"}</Notewarning>
       )}
       {selectedTexts
         .slice()
@@ -1153,7 +1140,9 @@ function FilesDisplay({
       ))} */}
       {record && (
         <Heading>
-          <Subheading title="You are adding notes to this file.">{"Current file: "}</Subheading>
+          <Subheading title="You are adding notes to this file.">
+            {"Current file: "}
+          </Subheading>
           {filetitle ? filetitle : ""}
           {filetitle && selectedTexts.length == 0 ? " (new file)" : ""}
         </Heading>
@@ -1166,114 +1155,173 @@ function FilesDisplay({
             <>
               {" "}
               {" or create a"}{" "}
-              {selectedTexts && selectedTexts.length != 0&& <MyButton
-              title="Create a new file!"
-                onClick={() => {
-                  chrome.runtime.sendMessage(
-                    { action: "getTabInfo" },
-                    (response) => {
-                      if (!response) return;
+              {selectedTexts && selectedTexts.length != 0 && (
+                <MyButton
+                  title="Create a new file!"
+                  onClick={() => {
+                    chrome.runtime.sendMessage(
+                      { action: "getTabInfo" },
+                      (response) => {
+                        if (!response) return;
 
-                      const url = response.url;
-                      const title = response.title;
-                      const favicon = response.favicon;
+                        const url = response.url;
+                        const title = response.title;
+                        const favicon = response.favicon;
 
-                      console.log("Tab URL:", url);
-                      console.log("Tab Title:", title);
-                      console.log("Tab Favicon:", favicon);
+                        //console.log("Tab URL:", url);
+                        //console.log("Tab Title:", title);
+                        //console.log("Tab Favicon:", favicon);
 
-                      if (!url) return; // If URL is empty, exit early
+                        if (!url) return; // If URL is empty, exit early
 
-                      chrome.storage.local.get(
-                        ["autotoken69"],
-                        (tokenResult) => {
-                          const token = tokenResult.autotoken69;
-                          if (!token) {
-                            console.log("No token found.");
-                            return;
-                          }
+                        chrome.storage.local.get(
+                          ["autotoken69"],
+                          (tokenResult) => {
+                            const token = tokenResult.autotoken69;
+                            if (!token) {
+                              //console.log("No token found.");
+                              return;
+                            }
 
-                          fetch("https://autonotebackend.shadowbites10.workers.dev/newfile", {
-                            method: "POST",
-                            headers: {
-                              Authorization: `Bearer ${token}`,
-                              "Content-Type": "application/json",
-                            },
-                            body: JSON.stringify({
-                              title: title,
-                              tab: url,
-                              faviconicon: favicon,
-                            }),
-                          })
-                            .then((response) => response.json())
-                            .then((data) => {
-                              if (data.success) {
-                                setfile(data.res.id);
-                                setfiletitle(title);
-                                setbakchodiover(true);
-                                setSelectedTexts([]);
-                                chrome.storage.local.remove([url]);
-                                chrome.storage.local.set(
-                                  { [url]: JSON.stringify(data.res.id) },
-                                  () => {
-                                    console.log("Tab data stored.");
-                                  }
-                                );
-                                //setRegetfiles((x) => !x);
-                                setAllfiles((filee) => [...filee, { id: data.res.id, title: data.res.title }]);
-                                fetch("https://autonotebackend.shadowbites10.workers.dev/upserturl", {
-                                  method: "POST",
-                                  headers: {
-                                    Authorization: `Bearer ${token}`,
-                                    "Content-Type": "application/json",
-                                  },
-                                  body: JSON.stringify({
-                                    url: url,
-                                    file: data.res.id,
-                                  }),
-                                })
-                                  .then((response) => response.json())
-                                  .then((data) => {
-                                    if (data.success) {
-                                    }
-                                  })
-                                  .catch((error) => {
-                                    console.error(
-                                      "Error storing tabs in the backend:",
-                                      error
-                                    );
-                                  });
+                            fetch(
+                              "https://autonotebackend.shadowbites10.workers.dev/newfile",
+                              {
+                                method: "POST",
+                                headers: {
+                                  Authorization: `Bearer ${token}`,
+                                  "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify({
+                                  title: title,
+                                  tab: url,
+                                  faviconicon: favicon,
+                                }),
                               }
-                            })
-                            .catch((error) => {
-                              console.error(
-                                "Error storing tabs in the backend:",
-                                error
-                              );
-                            });
-                        }
-                      );
-                    }
-                  );
-                }}
-              >
-                New File
-              </MyButton>}
-              {"    "}{<Combine 
-              title="Refresh!"
-              onClick={()=>{
-                setRegetfiles(x=>!x);
-              }}> <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 21 21"><g fill="white" fill-rule="evenodd" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 3.5c-2.412 1.378-4 4.024-4 7a8 8 0 0 0 8 8m4-1c2.287-1.408 4-4.118 4-7a8 8 0 0 0-8-8"/><path d="M6.5 7.5v-4h-4m12 10v4h4"/></g></svg> </Combine>}
+                            )
+                              .then((response) => response.json())
+                              .then((data) => {
+                                if (data.success) {
+                                  setfile(data.res.id);
+                                  setfiletitle(title);
+                                  setbakchodiover(true);
+                                  setSelectedTexts([]);
+                                  chrome.storage.local.remove([url]);
+                                  chrome.storage.local.set(
+                                    { [url]: JSON.stringify(data.res.id) },
+                                    () => {
+                                      //console.log("Tab data stored.");
+                                    }
+                                  );
+                                  //setRegetfiles((x) => !x);
+                                  setAllfiles((filee) => [
+                                    ...filee,
+                                    { id: data.res.id, title: data.res.title },
+                                  ]);
+                                  fetch(
+                                    "https://autonotebackend.shadowbites10.workers.dev/upserturl",
+                                    {
+                                      method: "POST",
+                                      headers: {
+                                        Authorization: `Bearer ${token}`,
+                                        "Content-Type": "application/json",
+                                      },
+                                      body: JSON.stringify({
+                                        url: url,
+                                        file: data.res.id,
+                                      }),
+                                    }
+                                  )
+                                    .then((response) => response.json())
+                                    .then((data) => {
+                                      if (data.success) {
+                                      }
+                                    })
+                                    .catch((error) => {
+                                      //console.error(
+                                      //   "Error storing tabs in the backend:",
+                                      //   error
+                                      // );
+                                    });
+                                }
+                              })
+                              .catch((error) => {
+                                //console.error(
+                                //   "Error storing tabs in the backend:",
+                                //   error
+                                // );
+                              });
+                          }
+                        );
+                      }
+                    );
+                  }}
+                >
+                  New File
+                </MyButton>
+              )}
+              {"    "}
+              {
+                <Combine
+                  title="Refresh!"
+                  onClick={() => {
+                    setRegetfiles((x) => !x);
+                  }}
+                >
+                  {" "}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="11"
+                    height="11"
+                    viewBox="0 0 21 21"
+                  >
+                    <g
+                      fill="white"
+                      fill-rule="evenodd"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M6.5 3.5c-2.412 1.378-4 4.024-4 7a8 8 0 0 0 8 8m4-1c2.287-1.408 4-4.118 4-7a8 8 0 0 0-8-8" />
+                      <path d="M6.5 7.5v-4h-4m12 10v4h4" />
+                    </g>
+                  </svg>{" "}
+                </Combine>
+              }
             </>
           ) : (
-            <>{":  "}{<Combine title="Refresh!" onClick={()=>{
-              setRegetfiles(x=>!x);
-            }}> <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 21 21"><g fill="white" fill-rule="evenodd" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 3.5c-2.412 1.378-4 4.024-4 7a8 8 0 0 0 8 8m4-1c2.287-1.408 4-4.118 4-7a8 8 0 0 0-8-8"/><path d="M6.5 7.5v-4h-4m12 10v4h4"/></g></svg> </Combine>}</>
-            
+            <>
+              {":  "}
+              {
+                <Combine
+                  title="Refresh!"
+                  onClick={() => {
+                    setRegetfiles((x) => !x);
+                  }}
+                >
+                  {" "}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="11"
+                    height="11"
+                    viewBox="0 0 21 21"
+                  >
+                    <g
+                      fill="white"
+                      fill-rule="evenodd"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M6.5 3.5c-2.412 1.378-4 4.024-4 7a8 8 0 0 0 8 8m4-1c2.287-1.408 4-4.118 4-7a8 8 0 0 0-8-8" />
+                      <path d="M6.5 7.5v-4h-4m12 10v4h4" />
+                    </g>
+                  </svg>{" "}
+                </Combine>
+              }
+            </>
           )}
         </Subheading>
       )}
-      
 
       {record && allfiles && allfiles.length == 0 && (
         <Notewarning>{"You have no old files!"}</Notewarning>
@@ -1281,112 +1329,197 @@ function FilesDisplay({
       {!record && <Notewarning>{"start recording to see files!!"}</Notewarning>}
 
       {allfiles.map((x, index) => (
-        <>
-          {filetodel != x.id && <Notea
-            onClick={() => {
-              if (x.id != file) {
-                setfile(x.id);
-                setfiletitle(x.title);
-                chrome.storage.local.get(["autotoken69"], (tokenResult) => {
-                  const token = tokenResult.autotoken69;
-                  if (!token) {
-                    console.log("No token found.");
-                    return;
-                  }
-                  console.log("getting content of "+x.id);
-                  fetch("https://autonotebackend.shadowbites10.workers.dev/getfiletitle", {
-                    method: "POST",
-                    headers: {
-                      Authorization: `Bearer ${token}`,
-                      "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ id: x.id }),
-                  })
-                    .then((response) => response.json())
-                    .then((data) => {
-                      if (data.success) {
-                        setSelectedTexts(JSON.parse(data.res.content));
-                        setbakchodiover(true);
-                        console.log("File title:", data.res.title);
-                      }
-                    })
-                    .catch((error) => {
-                      console.error("Error storing tabs in the backend:", error);
-                    });
-                });
-                //setSelectedTexts(JSON.parse(x.content));
-                chrome.runtime.sendMessage(
-                  { action: "getTabInfo" },
-                  (response) => {
-                    if (!response) return;
+        <StyledDiv key={index}>
+          {filetodel != x.id && (
+            <Notea
+              onClick={() => {
+                if (x.id != file) {
+                  if (selectedTexts.length == 0) {
+                    chrome.runtime.sendMessage(
+                      { action: "getTabInfo" },
+                      (response) => {
+                        if (!response) return;
 
-                    const url = response.url;
-                    chrome.storage.local.set(
-                      { [url]: JSON.stringify(x.id) },
-                      () => {
-                        console.log("Tab data stored.");
+                        const url = response.url;
+                        const title = response.title;
+                        const favicon = response.favicon;
+
+                        //console.log("Tab URL:", url);
+                        //console.log("Tab Title:", title);
+                        //console.log("Tab Favicon:", favicon);
+
+                        if (filetitle == title) {
+                          setisDeleting(true);
+                          chrome.storage.local.get(
+                            ["autotoken69"],
+                            (tokenResult) => {
+                              const token = tokenResult.autotoken69;
+                              if (!token) {
+                                //console.log("No token found.");
+                                return;
+                              }
+                              fetch(
+                                "https://autonotebackend.shadowbites10.workers.dev/deletefile",
+                                {
+                                  method: "POST",
+                                  headers: {
+                                    Authorization: `Bearer ${token}`,
+                                    "Content-Type": "application/json",
+                                  },
+                                  body: JSON.stringify({
+                                    id: file,
+                                  }),
+                                }
+                              )
+                                .then((response) => response.json())
+                                .then((data) => {
+                                  setisDeleting(false);
+                                  if (data.success) {
+                                    setAllfiles((prevFiles) =>
+                                      prevFiles.filter((f) => f.id !== file)
+                                    );
+                                    setfile(x.id);
+                                    setfiletitle(x.title);
+
+                                    setFiletodelete(null);
+                                  }
+                                })
+                                .catch((error) => {
+                                  setfile(x.id);
+                                  setfiletitle(x.title);
+                                  setisDeleting(false);
+                                  //console.error(
+                                  //   "Error storing tabs in the backend:",
+                                  //   error
+                                  // );
+                                });
+                            }
+                          );
+                        } else {
+                          setfile(x.id);
+                          setfiletitle(x.title);
+                        }
                       }
                     );
-                    chrome.storage.local.get(["autotoken69"], (tokenResult) => {
-                      const token = tokenResult.autotoken69;
-                      if (!token) {
-                        console.log("No token found.");
-                        return;
-                      }
-                      fetch("https://autonotebackend.shadowbites10.workers.dev/upserturl", {
+                  } else {
+                    setfile(x.id);
+                    setfiletitle(x.title);
+                  }
+
+                  chrome.storage.local.get(["autotoken69"], (tokenResult) => {
+                    const token = tokenResult.autotoken69;
+                    if (!token) {
+                      //console.log("No token found.");
+                      return;
+                    }
+                    //console.log("getting content of " + x.id);
+                    fetch(
+                      "https://autonotebackend.shadowbites10.workers.dev/getfiletitle",
+                      {
                         method: "POST",
                         headers: {
                           Authorization: `Bearer ${token}`,
                           "Content-Type": "application/json",
                         },
-                        body: JSON.stringify({
-                          url: url,
-                          file: x.id,
-                        }),
+                        body: JSON.stringify({ id: x.id }),
+                      }
+                    )
+                      .then((response) => response.json())
+                      .then((data) => {
+                        if (data.success) {
+                          setSelectedTexts(JSON.parse(data.res.content));
+                          setbakchodiover(true);
+                          //console.log("File title:", data.res.title);
+                        }
                       })
-                        .then((response) => response.json())
-                        .then((data) => {
-                          if (data.success) {
-                          }
-                        })
-                        .catch((error) => {
-                          console.error(
-                            "Error storing tabs in the backend:",
-                            error
-                          );
-                        });
-                    });
-                  }
-                );
-              }
-            }}
-            key={index}
-          >
-            {x.id != file && (
-              <Combine
-                onClick={(e) => {
-                  if(!isDeleting){
-                    e.stopPropagation();
-                  setFiletodelete(x.id);
-                  }
-                }}
-                title={`delete ${x.title}`}
-              >
-                {x.id !== file ? (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="11"
-                    height="11"
-                    viewBox="0 0 32 32"
-                  >
-                    <path
-                      fill="currentColor"
-                      d="M14 12.5a.5.5 0 0 0-1 0v11a.5.5 0 0 0 1 0zm4.5-.5a.5.5 0 0 1 .5.5v11a.5.5 0 0 1-1 0v-11a.5.5 0 0 1 .5-.5m2-5.5V7h8a.5.5 0 0 1 0 1h-2.543l-1.628 17.907A4.5 4.5 0 0 1 19.847 30h-7.694a4.5 4.5 0 0 1-4.482-4.093L6.043 8H3.5a.5.5 0 0 1 0-1h8v-.5a4.5 4.5 0 1 1 9 0m-8 0V7h7v-.5a3.5 3.5 0 1 0-7 0M7.048 8l1.62 17.817A3.5 3.5 0 0 0 12.152 29h7.694a3.5 3.5 0 0 0 3.486-3.183L24.953 8z"
-                    />
-                  </svg>
-                ) : ""}
+                      .catch((error) => {
+                        //console.error(
+                        //   "Error storing tabs in the backend:",
+                        //   error
+                        // );
+                      });
+                  });
+                  //setSelectedTexts(JSON.parse(x.content));
+                  chrome.runtime.sendMessage(
+                    { action: "getTabInfo" },
+                    (response) => {
+                      if (!response) return;
 
-                {/* <svg
+                      const url = response.url;
+                      chrome.storage.local.set(
+                        { [url]: JSON.stringify(x.id) },
+                        () => {
+                          //console.log("Tab data stored.");
+                        }
+                      );
+                      chrome.storage.local.get(
+                        ["autotoken69"],
+                        (tokenResult) => {
+                          const token = tokenResult.autotoken69;
+                          if (!token) {
+                            //console.log("No token found.");
+                            return;
+                          }
+                          fetch(
+                            "https://autonotebackend.shadowbites10.workers.dev/upserturl",
+                            {
+                              method: "POST",
+                              headers: {
+                                Authorization: `Bearer ${token}`,
+                                "Content-Type": "application/json",
+                              },
+                              body: JSON.stringify({
+                                url: url,
+                                file: x.id,
+                              }),
+                            }
+                          )
+                            .then((response) => response.json())
+                            .then((data) => {
+                              if (data.success) {
+                              }
+                            })
+                            .catch((error) => {
+                              //console.error(
+                              //   "Error storing tabs in the backend:",
+                              //   error
+                              // );
+                            });
+                        }
+                      );
+                    }
+                  );
+                }
+              }}
+              key={index}
+            >
+              {x.id != file && (
+                <Combine
+                  onClick={(e) => {
+                    if (!isDeleting) {
+                      e.stopPropagation();
+                      setFiletodelete(x.id);
+                    }
+                  }}
+                  title={`delete ${x.title}`}
+                >
+                  {x.id !== file ? (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="11"
+                      height="11"
+                      viewBox="0 0 32 32"
+                    >
+                      <path
+                        fill="currentColor"
+                        d="M14 12.5a.5.5 0 0 0-1 0v11a.5.5 0 0 0 1 0zm4.5-.5a.5.5 0 0 1 .5.5v11a.5.5 0 0 1-1 0v-11a.5.5 0 0 1 .5-.5m2-5.5V7h8a.5.5 0 0 1 0 1h-2.543l-1.628 17.907A4.5 4.5 0 0 1 19.847 30h-7.694a4.5 4.5 0 0 1-4.482-4.093L6.043 8H3.5a.5.5 0 0 1 0-1h8v-.5a4.5 4.5 0 1 1 9 0m-8 0V7h7v-.5a3.5 3.5 0 1 0-7 0M7.048 8l1.62 17.817A3.5 3.5 0 0 0 12.152 29h7.694a3.5 3.5 0 0 0 3.486-3.183L24.953 8z"
+                      />
+                    </svg>
+                  ) : (
+                    ""
+                  )}
+
+                  {/* <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="11"
                 height="11"
@@ -1397,58 +1530,80 @@ function FilesDisplay({
                   d="M21 341V85h256v256q0 18-12.5 30.5T235 384H64q-18 0-30.5-12.5T21 341zM299 21v43H0V21h75L96 0h107l21 21h75z"
                 />
               </svg> */}
-              </Combine>
-            )}
-            {x.id == file ? ">> (current) " : ""}
-            {x.title}
-            
-            
-          </Notea>}
+                </Combine>
+              )}
+              {x.id == file ? <Mytextgreen>{">> (current) "}</Mytextgreen> : ""}
+              {x.title}
+            </Notea>
+          )}
 
-          {filetodel == x.id ?(<Noteaa>Delete : {" "}{x.title} <Combine onClick={()=>{
-            setisDeleting(true);
-            chrome.storage.local.get(["autotoken69"], (tokenResult) => {
-              const token = tokenResult.autotoken69;
-              if (!token) {
-                console.log("No token found.");
-                return;
-              }
-              fetch("https://autonotebackend.shadowbites10.workers.dev/deletefile", {
-                method: "POST",
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  id:x.id
-                }),
-              })
-                .then((response) => response.json())
-                .then((data) => {
-                  setisDeleting(false);
-                  if (data.success) {
-                    setAllfiles((prevFiles) => prevFiles.filter((file) => file.id !== x.id));
-                    setFiletodelete(null);
-                  }
-                })
-                .catch((error) => {
-                  setisDeleting(false)
-                  console.error(
-                    "Error storing tabs in the backend:",
-                    error
-                  );
-                });
-            })
-          }}>{"  Yes"}</Combine>{"  /  "}<Combine onClick={(e)=>{
-              e.stopPropagation();
-              setFiletodelete(null);
-              
-            }}>No</Combine></Noteaa>):""}
-        </>
+          {filetodel == x.id ? (
+            <Noteaa>
+              Delete : {x.title}{" "}
+              <Combine
+                onClick={() => {
+                  setisDeleting(true);
+                  chrome.storage.local.get(["autotoken69"], (tokenResult) => {
+                    const token = tokenResult.autotoken69;
+                    if (!token) {
+                      //console.log("No token found.");
+                      return;
+                    }
+                    fetch(
+                      "https://autonotebackend.shadowbites10.workers.dev/deletefile",
+                      {
+                        method: "POST",
+                        headers: {
+                          Authorization: `Bearer ${token}`,
+                          "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                          id: x.id,
+                        }),
+                      }
+                    )
+                      .then((response) => response.json())
+                      .then((data) => {
+                        setisDeleting(false);
+                        if (data.success) {
+                          setAllfiles((prevFiles) =>
+                            prevFiles.filter((file) => file.id !== x.id)
+                          );
+                          setFiletodelete(null);
+                        }
+                      })
+                      .catch((error) => {
+                        setisDeleting(false);
+                        //console.error(
+                        //   "Error storing tabs in the backend:",
+                        //   error
+                        // );
+                      });
+                  });
+                }}
+              >
+                <Mytextyes>{"  Yes"}</Mytextyes>
+              </Combine>
+              {"  /  "}
+              <Combine
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setFiletodelete(null);
+                }}
+              >
+                <Mytextno>No</Mytextno>
+              </Combine>
+            </Noteaa>
+          ) : (
+            ""
+          )}
+        </StyledDiv>
       ))}
     </NotesContainer>
   );
 }
+
+const StyledDiv = styled.div``;
 
 const NotesContainer = styled.div`
   position: fixed;
@@ -1532,22 +1687,25 @@ const Subheading = styled.div`
   }
 `;
 
-
-
-
-const Subheading2 = styled.div`
-  
-  font-size: 10px;
-  margin: 5px 0;
-  border-bottom: 1px solid #ccc;
-  color: #0000ff; /* Changed text color to blue */
-  &:last-child {
-    border-bottom: none;
+const Mytextno = styled.div`
+  color: #ff0000; /* Red color */
+  &:hover {
+    color: #006400; /* Green color */
+    font-size: 12px; /* Increases text size on hover */
+  }
+`;
+const Mytextyes = styled.div`
+  color: #0000ff; /* Blue color */
+  &:hover {
+    color: #006400; /* Green color */
+    font-size: 12px; /* Increases text size on hover */
   }
 `;
 
-
-
+const Mytextgreen = styled.div`
+  color: #daa520; /* Green color */
+  display: inline-block; /* Ensures it behaves like an inline element with control over dimensions */
+`;
 
 const Combine = styled.div`
   display: inline-block;

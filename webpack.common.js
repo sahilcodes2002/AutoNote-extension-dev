@@ -1,9 +1,10 @@
-const autoprefixer = require('autoprefixer')
-const CopyPlugin  = require('copy-webpack-plugin')
-const loader = require('css-loader')
-const HtmlPlugin = require('html-webpack-plugin')
-const path = require('path')
-const tailwindcss = require('tailwindcss')
+const autoprefixer = require('autoprefixer');
+const webpack = require('webpack');
+const CopyPlugin = require('copy-webpack-plugin');
+const HtmlPlugin = require('html-webpack-plugin');
+const path = require('path');
+const tailwindcss = require('tailwindcss');
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
     mode: "development",
@@ -16,17 +17,29 @@ module.exports = {
     },
     module: {
         rules: [
-            { test: /\.jsx?$/, 
-                exclude: /node_modules/, 
-                use: { 
-                    loader: 'babel-loader', 
-                    options: { 
+            { 
+                test: /\.jsx?$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: 'babel-loader',
+                    options: {
                         presets: [
-                            '@babel/preset-env', 
-                            '@babel/preset-react'
+                            ['@babel/preset-env', { 
+                                targets: "defaults",
+                                useBuiltIns: "entry",
+                                corejs: 3 
+                            }],
+                            ['@babel/preset-react', { runtime: "automatic" }]
                         ],
-                    },
-                },
+                        generatorOpts: {
+                            jsescOption: {
+                                minimal: true,
+                                escapeEverything: true,
+                                encoding: 'utf8'
+                            }
+                        }
+                    }
+                }
             },
             {
                 use: "ts-loader",
@@ -34,30 +47,36 @@ module.exports = {
                 exclude: /node_modules/
             },
             {
-                use: ['style-loader','css-loader',{
-                    loader: 'postcss-loader',
-                    options:{
-                        postcssOptions: {
-                            ident: 'postcss',
-                            plugins: [tailwindcss, autoprefixer]
+                use: [
+                    'style-loader',
+                    'css-loader',
+                    {
+                        loader: 'postcss-loader',
+                        options: {
+                            postcssOptions: {
+                                plugins: [
+                                    tailwindcss,
+                                    autoprefixer
+                                ]
+                            }
                         }
                     }
-                }],
+                ],
                 test: /\.css$/i,
             },
             {
                 test: /\.(png|svg|jpg|jpeg|gif)$/i,
-                type: 'asset/resource',
-                use: 'asset/resource'
-              },
+                type: 'asset/resource'
+            },
         ]
     },
     plugins: [
-        new CopyPlugin ({
+        new CopyPlugin({
             patterns: [
-                { from: path.resolve('src/static') , 
-                to: path.resolve('dist') 
-                },
+                { 
+                    from: path.resolve('src/static'),
+                    to: path.resolve('dist')
+                }
             ]
         }),
         ...getHtmlPlugins([
@@ -66,25 +85,42 @@ module.exports = {
         ])
     ],
     resolve: {
-        extensions: [".tsx", ".ts", ".js"]
-    }, 
+        extensions: [".tsx", ".ts", ".js", ".jsx"]
+    },
     output: {
-        filename: '[name].js'
+        filename: '[name].js',
+        path: path.resolve(__dirname, 'dist'),
+        charset: true, // Webpack 5+ built-in UTF-8 handling
+        clean: true
     },
     optimization: {
         splitChunks: {
-            chunks(chunk){
+            chunks(chunk) {
                 return chunk.name !== 'contentScript';
             }
         },
+        minimize: true,
+        minimizer: [
+            new TerserPlugin({
+                terserOptions: {
+                    format: {
+                        comments: false,
+                        ascii_only: true // Crucial for encoding
+                    }
+                },
+                extractComments: false
+            })
+        ]
     }
-}
+};
 
-
-function getHtmlPlugins(chunks){
+function getHtmlPlugins(chunks) {
     return chunks.map(chunk => new HtmlPlugin({
         title: 'React Extension',
         filename: `${chunk}.html`,
-        chunks:[chunk]
-    }))
+        chunks: [chunk],
+        meta: {
+            charset: 'utf-8' // Explicit charset in HTML
+        }
+    }));
 }

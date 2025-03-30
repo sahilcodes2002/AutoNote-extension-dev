@@ -18,11 +18,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === 'setToken') {
-    console.log('Token received and stored in background.');
+    //console.log('Token received and stored in background.');
     
     // Store token in local storage
     chrome.storage.local.set({ 'autotoken69': request.token69 }, () => {
-      console.log('Token saved in storage.');
+      //console.log('Token saved in storage.');
     });
 
     // Send token to content script
@@ -39,7 +39,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
   if (request.action === 'removeToken') {
     chrome.storage.local.remove(['autotoken69'], () => {
-      console.log('authToken removed from local storage');
+      //console.log('authToken removed from local storage');
       sendResponse({ success: true });
     });
 
@@ -99,15 +99,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 
 chrome.runtime.onStartup.addListener(() => {
-  console.log("Browser just started!");
+  //console.log("Browser just started!");
 
   chrome.storage.local.get(null, (items) => {
     if (chrome.runtime.lastError) {
-      console.error("Error retrieving storage:", chrome.runtime.lastError);
+      //console.error("Error retrieving storage:", chrome.runtime.lastError);
       return;
     }
 
-    console.log("Stored data before cleanup:", items);
+    //console.log("Stored data before cleanup:", items);
 
     // Filter out `autotoken69`, deleting everything else
     const keysToDelete = Object.keys(items).filter((key) => key !== "autotoken69");
@@ -115,17 +115,17 @@ chrome.runtime.onStartup.addListener(() => {
     if (keysToDelete.length > 0) {
       chrome.storage.local.remove(keysToDelete, () => {
         if (chrome.runtime.lastError) {
-          console.error("Error deleting storage items:", chrome.runtime.lastError);
+          //console.error("Error deleting storage items:", chrome.runtime.lastError);
         } else {
-          console.log("Deleted all except 'autotoken69'.");
+          //console.log("Deleted all except 'autotoken69'.");
           chrome.storage.local.get(["autotoken69"], (tokenResult) => {
                 const token = tokenResult.autotoken69;
                 if (!token) {
-                  console.log("No token found.");
+                  //console.log("No token found.");
                   return;
                 }
           
-                console.log("Token retrieved:", token);
+                //console.log("Token retrieved:", token);
           
                 // Send request to backend
                 fetch("https://autonotebackend.shadowbites10.workers.dev/getallurl", {
@@ -138,7 +138,7 @@ chrome.runtime.onStartup.addListener(() => {
                 })
                   .then((response) => response.json())
                   .then((data) => {
-                    console.log("Received response from backend:", data); // ✅ Debugging
+                    //console.log("Received response from backend:", data); // ✅ Debugging
                     if (data.success) {
                       const keystoadd = data.res.file;
                       
@@ -146,25 +146,25 @@ chrome.runtime.onStartup.addListener(() => {
                         if(item.url!=null){
                           chrome.storage.local.set({ [item.url.url]: item.url.file_id }, () => {
                             if (chrome.runtime.lastError) {
-                              console.error(`Error saving ${item.key}:`, chrome.runtime.lastError);
+                              //console.error(`Error saving ${item.key}:`, chrome.runtime.lastError);
                             } else {
-                              console.log(`Saved: ${item.key} -> ${item.value}`);
+                              //console.log(`Saved: ${item.key} -> ${item.value}`);
                             }
                           });
                         }
                       });
                     } else {
-                      console.error("Backend returned failure:", data);
+                      //console.error("Backend returned failure:", data);
                     }
                   })
                   .catch((error) => {
-                    console.error("Error updating default state:", error);
+                    //console.error("Error updating default state:", error);
                   });
               });
         }
       });
     } else {
-      console.log("Nothing to delete. Only 'autotoken69' exists.");
+      //console.log("Nothing to delete. Only 'autotoken69' exists.");
     }
   });
 });

@@ -22,8 +22,7 @@
       "bookmarks",
       "unlimitedStorage",
       "identity",
-      "clipboardRead",
-      "clipboardWrite"
+      "clipboardRead"
     ],
     
     "background": {

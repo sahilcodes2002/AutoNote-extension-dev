@@ -133,7 +133,7 @@ function MainComponent() {
         try {
           originalClipboard.current = await navigator.clipboard.readText();
         } catch (error) {
-          console.warn("Failed to read clipboard:", error);
+          //console.warn("Failed to read clipboard:", error);
         }
       }
   
@@ -221,7 +221,7 @@ function MainComponent() {
           const { text } = await handleClipboardCopy();
           if (text) await sendToBackend(text);
         } catch (error) {
-          console.error("Selection processing error:", error);
+          //console.error("Selection processing error:", error);
         }
       }, 350);
     }    
